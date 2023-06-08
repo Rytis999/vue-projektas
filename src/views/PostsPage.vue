@@ -6,6 +6,7 @@
         <p class="article-info">Author: {{ getAuthorName(article.author) }}</p>
         <p class="article-info">Created: {{ formatDate(article.created_at) }}</p>
         <p class="article-info">Updated: {{ formatDate(article.updated_at) }}</p>
+        <button @click="deletePost(article.id)">Delete</button>
       </div>
     </div>
   </div>
@@ -40,6 +41,21 @@ export default {
     formatDate(dateString) {
       const date = new Date(dateString);
       return date.toLocaleDateString();
+    },
+    deletePost(articleId) {
+      fetch(`http://localhost:3000/articles/${articleId}`, {
+        method: 'DELETE'
+      })
+        .then(response => {
+          if (response.ok) {
+            console.log('Post deleted');
+          } else {
+            console.error('Error deleting post');
+          }
+        })
+        .catch(error => {
+          console.error('Error deleting post:', error);
+        });
     }
   }
 };

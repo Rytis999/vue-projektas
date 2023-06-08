@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 // import HomeView from '../views/HomeView.vue'
 import NotFound from '../views/NotFound.vue'
-import PostsDetailPage from '../views/PostsDetailPage.vue'
+// import PostsDetailPage from '../views/PostsDetailPage.vue'
 import EditPostPage from '../views/EditPostPage.vue'
 
 const router = createRouter({
@@ -21,12 +21,12 @@ const router = createRouter({
       component: () => import('../views/PostsPage.vue')
     },
 
-{
-  path: '/posts-detail-page',
-  name: 'PostsDetailPage',
-  component: PostsDetailPage
+// {
+//   path: '/posts-detail-page',
+//   name: 'PostsDetailPage',
+//   component: PostsDetailPage
 
-},
+// },
 
 {
 path: '/edit-post-page',
