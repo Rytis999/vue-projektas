@@ -6,7 +6,7 @@ import { RouterLink, RouterView } from 'vue-router'
 <template>
   <nav>
      
-        <RouterLink to="/about">Post page</RouterLink>
+        <RouterLink to="/">Post page</RouterLink>
         <!-- <RouterLink to="/posts-detail-page">Post detail page</RouterLink> -->
         <RouterLink to="/edit-post-page">Edit post page</RouterLink>
   </nav>

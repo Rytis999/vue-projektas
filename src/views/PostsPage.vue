@@ -1,23 +1,48 @@
 <template>
-  <div class="about">
-    <div class="article-list">
-      <div v-for="article in articles" :key="article.id" class="article-card">
-        <h3 class="article-title">{{ article.title }}</h3>
-        <p class="article-info">Author: {{ getAuthorName(article.author) }}</p>
-        <p class="article-info">Created: {{ formatDate(article.created_at) }}</p>
-        <p class="article-info">Updated: {{ formatDate(article.updated_at) }}</p>
-        <button @click="deletePost(article.id)">Delete</button>
+  <div>
+    <div class="about">
+      <div class="article-list">
+        <div v-for="article in articles" :key="article.id" class="article-card">
+          <h3 class="article-title">
+            <router-link :to="{ name: 'ArticleDetail', params: { id: article.id } }">
+              {{ article.title }}
+            </router-link>
+          </h3>
+          <p class="article-info">Author: {{ getAuthorName(article.author) }}</p>
+          <p class="article-info">Created: {{ formatDate(article.created_at) }}</p>
+          <p class="article-info">Updated: {{ formatDate(article.updated_at) }}</p>
+          <button @click="deletePost(article.id)">Delete</button>
+          <button @click="showEditModal(article)">Edit post</button>
+        </div>
       </div>
     </div>
+    <AddPost>Add post</AddPost>
+    <EditPostModal
+      :visible="editModalVisible"
+      :article="selectedArticle"
+      @save="saveEditedPost"
+      @cancel="cancelEdit"
+    ></EditPostModal>
   </div>
 </template>
 
 <script>
+import AddPost from '../components/AddPost.vue';
+import EditPostModal from '../components/EditPostModal.vue';
+import ArticleDetail from '../components/ArticleDetail.vue';
+
 export default {
+  components: {
+    AddPost,
+    EditPostModal,
+    ArticleDetail
+  },
   data() {
     return {
       articles: [],
-      authors: []
+      authors: [],
+      editModalVisible: false,
+      selectedArticle: null
     };
   },
   mounted() {
@@ -56,6 +81,40 @@ export default {
         .catch(error => {
           console.error('Error deleting post:', error);
         });
+    },
+    showEditModal(article) {
+      this.selectedArticle = article;
+      this.editModalVisible = true;
+    },
+    saveEditedPost(updatedPostData) {
+      const articleId = this.selectedArticle.id;
+      const post = this.articles.find(article => article.id === articleId);
+
+      fetch(`http://localhost:3000/articles/${articleId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updatedPostData),
+      })
+        .then(response => {
+          if (response.ok) {
+            console.log('Post updated');
+            // Update the corresponding post object in the articles array with the updated data
+            post.title = updatedPostData.title;
+            post.content = updatedPostData.content;
+            // You can also update other properties if needed
+          } else {
+            console.error('Error updating post');
+          }
+        })
+        .catch(error => {
+          console.error('Error updating post:', error);
+        });
+    },
+    cancelEdit() {
+      this.editModalVisible = false;
+      this.selectedArticle = null;
     }
   }
 };
@@ -70,7 +129,6 @@ export default {
   display: flex;
   flex-wrap: wrap;
   gap: 20px;
-  display: flex;
   justify-content: center;
   align-items: center;
 }
